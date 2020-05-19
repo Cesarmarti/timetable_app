@@ -98,12 +98,101 @@ class CenterApp extends State<CenterAppStateless> {
   getTimetable() async {
       var response = await http.get(url+vpisna+"&mode=ext");
       if (response.statusCode == 200) {
-        //var jsonResponse = convert.jsonDecode(response.body);
-        var jsonResponse = convert.jsonDecode("");
-        print(jsonResponse);
-
-        //iterate over days and create list object
         List<DayAllocations> alloc = new List<DayAllocations>();
+        var jsonResponse = convert.jsonDecode(response.body);
+        var monday = jsonResponse['MON'];
+        if(monday!=null){
+          DayAllocations al1 = new DayAllocations();
+          List<SingleAllocation> lista = new List<SingleAllocation>();
+          for(var day in monday){
+            var start = day['start'];
+            var tag = day['tag'].replaceAll(new RegExp(r"\([0-9]*\)"),"");
+            TimeOfDay _startTime = TimeOfDay(hour:int.parse(start.split(":")[0]),minute: int.parse(start.split(":")[1]));
+            String teachers = "";
+            for(var teacher in day['teachers'])
+              teachers+=teacher;
+            lista.add(new SingleAllocation(day['name'],tag,day['classroom'],day['durration'],_startTime,day['type'],teachers));
+
+          }
+          al1.day="MON";
+          al1.allocations = lista;
+          alloc.add(al1);
+        }
+        var tuesday = jsonResponse['TUE'];
+        if(tuesday!=null){
+          DayAllocations al1 = new DayAllocations();
+          List<SingleAllocation> lista = new List<SingleAllocation>();
+            for(var day in tuesday){
+              var start = day['start'];
+              var tag = day['tag'].replaceAll(new RegExp(r"\([0-9]*\)"),"");
+              TimeOfDay _startTime = TimeOfDay(hour:int.parse(start.split(":")[0]),minute: int.parse(start.split(":")[1]));
+              String teachers = "";
+              for(var teacher in day['teachers'])
+                teachers+=teacher;
+              lista.add(new SingleAllocation(day['name'],tag,day['classroom'],day['durration'],_startTime,day['type'],teachers));
+
+            }
+            al1.day="TUE";
+            al1.allocations = lista;
+            alloc.add(al1);
+
+        }
+        var wednesday = jsonResponse['WED'];
+        if(wednesday!=null){
+          DayAllocations al1 = new DayAllocations();
+          List<SingleAllocation> lista = new List<SingleAllocation>();
+          for(var day in wednesday){
+            var start = day['start'];
+            var tag = day['tag'].replaceAll(new RegExp(r"\([0-9]*\)"),"");
+            TimeOfDay _startTime = TimeOfDay(hour:int.parse(start.split(":")[0]),minute: int.parse(start.split(":")[1]));
+            String teachers = "";
+            for(var teacher in day['teachers'])
+              teachers+=teacher;
+            lista.add(new SingleAllocation(day['name'],tag,day['classroom'],day['durration'],_startTime,day['type'],teachers));
+
+          }
+          al1.day="WED";
+          al1.allocations = lista;
+          alloc.add(al1);
+        }
+        var thursday = jsonResponse['THU'];
+        if(thursday!=null){
+          DayAllocations al1 = new DayAllocations();
+          List<SingleAllocation> lista = new List<SingleAllocation>();
+          for(var day in thursday){
+            var start = day['start'];
+            var tag = day['tag'].replaceAll(new RegExp(r"\([0-9]*\)"),"");
+            TimeOfDay _startTime = TimeOfDay(hour:int.parse(start.split(":")[0]),minute: int.parse(start.split(":")[1]));
+            String teachers = "";
+            for(var teacher in day['teachers'])
+              teachers+=teacher;
+            lista.add(new SingleAllocation(day['name'],tag,day['classroom'],day['durration'],_startTime,day['type'],teachers));
+
+          }
+          al1.day="THU";
+          al1.allocations = lista;
+          alloc.add(al1);
+        }
+        var friday = jsonResponse['FRI'];
+        if(friday!=null){
+          DayAllocations al1 = new DayAllocations();
+          List<SingleAllocation> lista = new List<SingleAllocation>();
+          for(var day in friday){
+            var start = day['start'];
+            var tag = day['tag'].replaceAll(new RegExp(r"\([0-9]*\)"),"");
+            TimeOfDay _startTime = TimeOfDay(hour:int.parse(start.split(":")[0]),minute: int.parse(start.split(":")[1]));
+            String teachers = "";
+            for(var teacher in day['teachers'])
+              teachers+=teacher;
+            lista.add(new SingleAllocation(day['name'],tag,day['classroom'],day['durration'],_startTime,day['type'],teachers));
+
+          }
+          al1.day="FRI";
+          al1.allocations = lista;
+          alloc.add(al1);
+        }
+        //iterate over days and create list object
+
         /*
         * for(day : time)
         *   alloc.add()
@@ -114,7 +203,7 @@ class CenterApp extends State<CenterAppStateless> {
         //TimeOfDay _startTime = TimeOfDay(hour:int.parse(s.split(":")[0]),minute: int.parse(s.split(":")[1]));
         //TESTNI PODATKI
         //MON
-        DayAllocations al1 = new DayAllocations();
+        /*DayAllocations al1 = new DayAllocations();
         List<SingleAllocation> lista = new List<SingleAllocation>();
         lista.add(new SingleAllocation("Razvoj intelige","RIS","P20",3,TimeOfDay(hour: 11, minute: 0),"P","Miha medo"));
         lista.add(new SingleAllocation("Razvoj intelige","RIS","P17",2,TimeOfDay(hour: 17, minute: 0),"V","Joze Jenko"));
@@ -156,7 +245,7 @@ class CenterApp extends State<CenterAppStateless> {
         lista3.add(new SingleAllocation("Osnove umetne inteligence","OUI","PR23",1,TimeOfDay(hour: 17, minute: 0),"V","Jure"));
         al3.day="FRI";
         al3.allocations = lista3;
-        alloc.add(al3);
+        alloc.add(al3);*/
         timetable = alloc;
       }
   }
@@ -186,8 +275,9 @@ class CenterApp extends State<CenterAppStateless> {
       for(SingleAllocation subject in day.allocations){
         Color cellColor;
         //get color based on subject name
-        if(colorPicker.containsKey(subject.name)){
-          cellColor = colorPicker[subject.name];
+        var sname = subject.name.split("_")[0];
+        if(colorPicker.containsKey(sname)){
+          cellColor = colorPicker[sname];
         }else{
           cellColor = _randomColor.randomColor();
           int c = 0;
@@ -195,7 +285,7 @@ class CenterApp extends State<CenterAppStateless> {
             cellColor = _randomColor.randomColor();
             c++;
           }
-          colorPicker[subject.name] = cellColor;
+          colorPicker[sname] = cellColor;
         }
 
         int time_offset;
